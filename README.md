@@ -1,22 +1,38 @@
-OpenLDAP started to use runtime configuration stored in LDAP tree to completely replace previous configuration file(s). By intention this is preferred to support configuring LDAP service with no downtime thus also referred to as “runtime configuration”. While intentions are clear, there seem to be little tools other than ldapmodify for managing cn=config.
-cn=config the easy way
+# Motivation
 
-slapd-config to the rescue. After several days of developing and testing I’m introducing a bash script called slapd-config for managing subset of features controlled by cn=config here.
+Current releases of OpenLDAP are storing their configuration in LDAP tree using special backend driver completely replacing previous way of storing configuration in file(s) under `/etc`. This new configuration is beneficial for supporting _instantly applied_ configuration of LDAP services. That's why it's also referred to as “runtime configuration”. However, there haven't been any tools other than `ldapmodify` and `ldapsearch` for managing `cn=config`.
 
-> cn=config is the suffix for a thread of your OpenLDAP based tree using special backend driver.
+## `cn=config` the easy way
 
-slapd-config is a wrapper around client tools such as ldapsearch and ldapmodify trying to simplify access on cn=config. You don’t need to manage LDIF yourself to update access rules of your server or switching log level. The script has been developed and tested under Debian Squeeze and thus strongly relies on Debian-style authentication for accessing cn=config by using SASL mechanism EXTERNAL. This way there is no need to preconfigure a bind DN or password for accessing cn=config, but invoke the script as root.
+`slapd-config` to the rescue. After several days of developing and testing I was introducing a bash script called `slapd-config` for managing subset of features controlled by `cn=config` in April 2012. `cn=config` is the suffix of a special thread in your OpenLDAP based tree provided by special backend driver. 
 
-slapd-config implements different “modules” each providing several “actions”. Current state of development is putting focus on access rule management and schema management. In addition basic modification of existing configuration properties is supported as well. Again, if you’ve set up your LDAP server requiring bind for managin cn=config, this script doesn’t work out-of-box for you.
-Installing
+> By accident `slapd-config` is also the name of that OpenLDAP driver. To clarify, using the term `slapd-config` in this manual it's always referring to the script instead of the driver. However, if you want to get a list of available configuration options you might want to read the driver's manual page using `man slapd-config` on the command line.
+
+`slapd-config` is a wrapper around client tools such as `ldapsearch` and `ldapmodify` trying to simplify access on `cn=config`. You don’t need to manage LDIF yourself to update access rules of your server or switching log level. The script has been developed and tested under Debian Squeeze and thus strongly relies on Debian-style authentication for accessing `cn=config` by using SASL mechanism `EXTERNAL`. This way there is no need to preconfigure a bind DN or password for accessing `cn=config`. You simply have to invoke the script as user root.
+
+`slapd-config` implements several "modules" each providing a distinct set of "actions". Current state of development is putting focus on access rule management and schema management. In addition basic modification of existing configuration properties is supported as well.
+
+> Again, if you’ve set up your LDAP server requiring bind for managing `cn=config`, __this script doesn’t work out-of-box for you__.
+
+
+
+# Installing
 
 The script is distributed under terms of GPLv3. Thus you can use it free of any charge, however it comes without any warranty or liability for damages to your setup and/or data.
 
+Download release of `slapd-config` available from https://github.com/cepharum/slapd-config, extract it and copy contained script slapd-config to your favourite script folder making it executable there. In the following example the release v0.1 is downloaded and the contained script is stored under `/usr/bin` to be conveniently available.
+
+```
+~ # wget https://github.com/cepharum/slapd-config/archive/v0.1.tar.gz
+~ # tar xzf v0.1.tar.gz
+~ # cp slapd-config-0.1/slapd-config /usr/bin
+~ # chmod 0755 /usr/bin/slapd-config
+```
 
 
 # Usage
 
-The script includes a very brief help system listing supported modules and their actions as well as providing basic syntax of using selected actions. Common help and module list is available by:
+The script includes a very brief help system listing supported modules and their actions as well as providing basic syntax of using selected actions. Common help and module list is available by invoking:
 
 ```
 slapd-config help
@@ -28,7 +44,7 @@ Module-related help is available by inserting a module’s name as first argumen
 slapd-config db help
 ```
 
-This is listing all actions available in context of module “db”. Since most actions require additional arguments invoking a action without its required parameter results in another short note on how to invoke that action actually, e.g.
+This is listing all actions available in context of module “db”. Since most actions require additional arguments invoking an action without its required parameters results in another short note on how to invoke that action actually, e.g.
 
 ```
 slapd-config db read-access
@@ -43,13 +59,13 @@ The module db is available for listing existing databases and for managing acces
 slapd-config db list
 ```
 
-This is listing all backends of your LDAP server managing actual thread of data inside your tree. Thus it’s excluding databases such as cn=config itself. The list contains name, suffix of managed thread and DN of its runtime configuration for every database.
+This is listing all backends of your LDAP server managing actual thread of data inside your tree. Thus it’s excluding databases such as `cn=config` itself. The list contains name, suffix of managed thread and DN of its runtime configuration for every database.
 
 ```
 slapd-config db list-all
 ```
 
-In addition to normal database listing this one is including all other databases as well, such as cn=config.
+In addition to normal database listing this one is including all other databases as well, such as `cn=config`.
 
 ```
 slapd-config db show hdb
@@ -119,7 +135,7 @@ Though supported as an action here, deleting schema isn’t supported by OpenLDA
 
 ## Module raw
 
-Providing raw and very basic access to cn=config the module raw offers access on methods used internally by slapd-config to provide all operations described before. Most of its actions are related to navigating in tree selecting some entry and accessing it’s attributes for read/write.
+Providing raw and very basic access to `cn=config` the module raw offers access on methods used internally by slapd-config to provide all operations described before. Most of its actions are related to navigating in tree selecting some entry and accessing it’s attributes for read/write.
 
 ```
 slapd-config raw read ou=people,dc=acme,dc=com objectClass
