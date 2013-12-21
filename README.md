@@ -1,4 +1,3 @@
-
 OpenLDAP started to use runtime configuration stored in LDAP tree to completely replace previous configuration file(s). By intention this is preferred to support configuring LDAP service with no downtime thus also referred to as “runtime configuration”. While intentions are clear, there seem to be little tools other than ldapmodify for managing cn=config.
 cn=config the easy way
 
@@ -6,7 +5,7 @@ slapd-config to the rescue. After several days of developing and testing I’m i
 
 > cn=config is the suffix for a thread of your OpenLDAP based tree using special backend driver.
 
-slapd-config is a wrapper around client tools such as ldapsearch and ldapmodify trying to simplify access on cn=config. You don’t need to manage LDIF yourself to update access rules of your server or switching log level. The script has been developed and tested and Debian Squeeze and thus strongly relies on Debian-style authentication for accessing cn=config by using SASL mechanism EXTERNAL. This way there is no need to preconfigure a bind DN or password for accessing cn=config, but invoke the script as root.
+slapd-config is a wrapper around client tools such as ldapsearch and ldapmodify trying to simplify access on cn=config. You don’t need to manage LDIF yourself to update access rules of your server or switching log level. The script has been developed and tested under Debian Squeeze and thus strongly relies on Debian-style authentication for accessing cn=config by using SASL mechanism EXTERNAL. This way there is no need to preconfigure a bind DN or password for accessing cn=config, but invoke the script as root.
 
 slapd-config implements different “modules” each providing several “actions”. Current state of development is putting focus on access rule management and schema management. In addition basic modification of existing configuration properties is supported as well. Again, if you’ve set up your LDAP server requiring bind for managin cn=config, this script doesn’t work out-of-box for you.
 Installing
