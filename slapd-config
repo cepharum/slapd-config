@@ -430,7 +430,7 @@ actions are:
 				;;
 			delete)
 				[ $# -lt 3 ] && usage <<<"usage: $APPNAME raw delete <DN> <attr> <linenum>\n"
-				insertAttributeLine "$@"
+				deleteAttributeLine "$@"
 				;;
 			list)
 				[ $# -lt 1 ] && usage <<<"usage: $APPNAME raw list <baseDN> [ one | sub ]\n"
