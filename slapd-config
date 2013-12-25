@@ -346,7 +346,7 @@ usage()
 {
 	cat >&2 <<EOT
 OpenLDAP (slapd) runtime configuration utility
-(c) 2012, toxA IT-Dienstleistungen, Berlin (distributed under terms of GPLv3)
+(c) 2012-2013, cepharum GmbH, Berlin (distributed under terms of GPLv3)
 
 common usage: $APPNAME <module> <action> [ <parameters> ]
 
