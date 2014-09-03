@@ -198,7 +198,7 @@ schema2CN()
 	if [ $? -ne 0 -o -z "`echo "$cn"`" ]; then
 		if [ -n "${2}" ]; then
 			idx=-1
-			for cidx in `findEntries -dn 'cn=schema,cn=config' 'objectClass=*' dn -s one | sed -n 's/^[^{]\+{\([0-9]\)\+}.*$/\1/p'`; do
+			for cidx in `findEntries -dn 'cn=schema,cn=config' 'objectClass=*' dn -s one | sed -n 's/^[^{]\+{\([0-9]\+\)}.*$/\1/p'`; do
 				[ $cidx -gt $idx ] && idx=$cidx
 			done
 
