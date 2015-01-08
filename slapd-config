@@ -249,14 +249,20 @@ EOT
 
 schemaFileToLDIF()
 {
+    iidx=0
 	aidx=0
 	oidx=0
 
 	sed -e '/^#/d;/^ *$/d' | sed -ne '1h;1!H;${;x;s/[ \t]\+/ /g;s/ \?\n / /g;p;}' | while read rule; do
 		ruletype="${rule%% *}"
 		case "${ruletype,,}" in
+			objectidentifier)
+				[ $iidx -eq 0 ] || echo -n "\n"
+				echo -n "olcObjectIdentifier: {$iidx}${rule#* }"
+				iidx=$((iidx+1))
+				;;
 			attributetype)
-				[ $aidx -eq 0 ] || echo -n "\n"
+				[ $aidx -eq 0 ] && echo -n "%%toxa%%" || echo -n "\n"
 				echo -n "olcAttributeTypes: {$aidx}${rule#* }"
 				aidx=$((aidx+1))
 				;;
@@ -283,11 +289,14 @@ writeSchema()
 		ldapmodify $AUTHENTICATION <<-EOT
 dn: ${dn}
 changetype: modify
-replace: olcAttributeTypes
+replace: olcObjectIdentifier
 `echo "$code" | sed 's/%%toxa%%/\\n/g' | sed '1!d;s/\\\\n/\\n/g'`
 -
-replace: olcObjectClasses
+replace: olcAttributeTypes
 `echo "$code" | sed 's/%%toxa%%/\\n/g' | sed '2!d;s/\\\\n/\\n/g'`
+-
+replace: olcObjectClasses
+`echo "$code" | sed 's/%%toxa%%/\\n/g' | sed '3!d;s/\\\\n/\\n/g'`
 -
 		EOT
 	else
