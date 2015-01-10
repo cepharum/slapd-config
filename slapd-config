@@ -341,9 +341,7 @@ cn: ${cn}
 			[ -n "$classes" ] && ldif="${ldif}$(sed 's/\\n/\n/g' <<<"$classes")
 "
 
-			ldif="${ldif}-"
-
-			ldapadd <<<"$ldif"
+			ldapadd $AUTHENTICATION <<<"$ldif"
 		fi
 	)
 }
